@@ -160,6 +160,18 @@
             margin: 0;
         }
 
+        /* Bloco de Erro/Cuidado */
+        .warning {
+            background-color: rgba(255, 77, 77, 0.05);
+            border-left: 4px solid #ff4d4d;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+        .warning p {
+            margin: 0;
+        }
+
         /* Responsividade */
         @media (max-width: 1024px) {
             .sidebar {
@@ -279,29 +291,49 @@
             <h2>Passo 5: Conectar e Enviar (Push)</h2>
             <p>Com nosso commit local pronto, vamos conectá-lo ao repositório que criamos no GitHub (Passo 1) e enviar nossos arquivos.</p>
 
-            <p>1. Adicione o link do seu repositório remoto (aquele URL que você copiou). Damos a ele o apelido de <code>origin</code>:</p>
-            <pre><code>git remote add origin https://github.com/seu-usuario/meu-site.git</code></pre>
+            <p>1. Adicione o link do seu repositório remoto. Vamos usar a versão <strong>SSH</strong>, que é a correta para servidores e automação (e não a HTTPS).</p>
+            <pre><code>git remote add origin git@github.com:seu-usuario/meu-site.git</code></pre>
 
-            <p>2. Envie (push) seu commit da branch <code>main</code> local para a branch <code>main</code> do <code>origin</code> (GitHub):</p>
+            <p>2. Tente enviar (push) seu commit da branch <code>main</code> para o <code>origin</code> (GitHub):</p>
             <pre><code>git push -u origin main</code></pre>
-            <p>O <code>-u</code> é usado apenas na primeira vez para vincular permanentemente sua branch local à remota.</p>
+            
+            <div class="warning">
+                <p><strong>ERRO ESPERADO!</strong> Se esta é a primeira vez que você faz isso no servidor, este comando <strong>vai falhar</strong> com um erro parecido com:<br>
+                <code>git@github.com: Permission denied (publickey).</code></p>
+                <p>Isso é normal! Significa que o GitHub não conhece o seu servidor. O Passo 6 vai corrigir isso.</p>
+            </div>
         </section>
 
         <section id="passo6">
-            <h2>Passo 6: Autorização do Dispositivo</h2>
-            <p>Ao dar o <code>push</code> pela primeira vez, o GitHub não pedirá sua senha. Em vez disso, ele usará um fluxo de autorização de dispositivo, que é mais seguro.</p>
+            <h2>Passo 6: Configurando Autenticação SSH (Para o Push)</h2>
+            <p>O erro <code>Permission denied (publickey)</code> significa que seu servidor (no nosso caso, o usuário <code>root</code>) não tem permissão para "escrever" (fazer push) no GitHub.</p>
+            <p>Para corrigir isso, precisamos criar um "crachá" digital (uma chave SSH) no nosso servidor e "apresentá-lo" ao GitHub.</p>
+            
+            <h3>1. Gere a Chave SSH no Servidor</h3>
+            <p>No terminal do seu servidor (como <code>root</code>), gere uma nova chave. O <code>-N ""</code> significa que a chave não terá senha, permitindo o uso automático.</p>
+            <pre><code>ssh-keygen -t rsa -b 4096 -C "email-do-github@exemplo.com" -N ""</code></pre>
+            <p>Quando ele perguntar "Enter file in which to save the key...", apenas pressione <strong>Enter</strong> para aceitar o local padrão (<code>/root/.ssh/id_rsa</code>).</p>
 
+            <h3>2. Mostre e Copie a Chave Pública</h3>
+            <p>Agora, exiba a parte pública da chave (o "crachá") que você acabou de criar. Copie todo o resultado (o texto que começa com <code>ssh-rsa AAAA...</code>).</p>
+            <pre><code>cat /root/.ssh/id_rsa.pub</code></pre>
+
+            <h3>3. Adicione a Chave à sua Conta Pessoal do GitHub</h3>
+            <p>Esta chave autoriza o usuário <code>root</code> do seu servidor a agir como <strong>você</strong>.</p>
             <ol>
-                <li>No seu <strong>terminal</strong>, o Git mostrará uma mensagem parecida com:
-                    <pre><code>info: please complete authentication in your browser...
-Please enter the following one-time code: 1234-ABCD</code></pre>
-                </li>
-                <li>O navegador abrirá automaticamente. Se não abrir, acesse a URL que o terminal mostrar (ex: <code>github.com/login/device</code>).</li>
-                <li>Na página do GitHub, digite o código de 8 dígitos (<code>1234-ABCD</code>) que apareceu no seu terminal.</li>
-                <li>Clique em "Continue" e depois em "Authorize" (Autorizar).</li>
-                <li>Você verá uma tela de sucesso no navegador.</li>
-                <li>Volte ao terminal. O comando <code>git push</code> que estava pausado será concluído e seus arquivos serão enviados!</li>
+                <li>Vá para o site do GitHub.</li>
+                <li>Clique na sua foto de perfil (canto superior direito) e vá em <strong>Settings</strong> (Configurações).</li>
+                <li>No menu esquerdo, clique em <strong>"SSH and GPG keys"</strong>.</li>
+                <li>Clique em <strong>"New SSH key"</strong>.</li>
+                <li><strong>Title:</strong> Dê um nome (ex: "Servidor Root Easypanel").</li>
+                <li><strong>Key:</strong> Cole a chave pública (<code>ssh-rsa AAAA...</code>) que você copiou.</li>
+                <li>Clique em <strong>"Add SSH key"</strong>.</li>
             </ol>
+
+            <h3>4. Tente o Push Novamente (Agora vai funcionar!)</h3>
+            <p>Volte ao terminal do seu servidor e execute o comando que falhou:</p>
+            <pre><code>git push -u origin main</code></pre>
+            <p>Pronto! O GitHub vai reconhecer a chave SSH do seu servidor e aceitar o push.</p>
         </section>
 
         <section id="passo7">
