@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial: Deploy Automático com GitHub e Webhook</title>
+    <style>
+        /* Estilos idênticos ao tutorial anterior para consistência */
+        :root {
+            --dark-bg: #0a192f;
+            --content-bg: #111827;
+            --sidebar-bg: #0a192f;
+            --primary-color: #00ff88;
+            --secondary-color: #00b3ff;
+            --text-light: #ccd6f6;
+            --text-dark: #8892b0;
+            --border-color: #1f2937;
+            --danger-color: #ff4d4d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            display: flex;
+            line-height: 1.6;
+        }
+
+        /* --- Barra Lateral de Navegação --- */
+        .sidebar {
+            width: 320px; /* Um pouco mais largo para os nomes */
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .sidebar h1 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+        }
+
+        .sidebar nav li {
+            margin-bottom: 0.75rem;
+        }
+
+        .sidebar nav a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        .sidebar nav a:hover,
+        .sidebar nav a.active {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        /* --- Conteúdo Principal --- */
+        .content {
+            margin-left: 320px;
+            padding: 3rem 4rem;
+            width: calc(100% - 320px);
+        }
+
+        .content section {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .content section:last-child {
+            border-bottom: none;
+        }
+
+        .content h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .content h3 {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .content p {
+            margin-bottom: 1rem;
+        }
+
+        .content ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Bloco de Código */
+        pre {
+            background-color: var(--content-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        code {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            color: var(--text-light);
+        }
+
+        /* Bloco de Nota/Aviso */
+        .note {
+            background-color: rgba(0, 179, 255, 0.05); /* Fundo com cor secundária */
+            border-left: 4px solid var(--secondary-color);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+        
+        /* Bloco de Erro/Cuidado */
+        .warning {
+            background-color: rgba(255, 77, 77, 0.05);
+            border-left: 4px solid var(--danger-color);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+        
+        .warning p, .note p {
+            margin: 0;
+        }
+
+        /* Responsividade */
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .content {
+                margin-left: 0;
+                width: 100%;
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <h1>Tutorial: Deploy Automático</h1>
+        <nav>
+            <ul>
+                <li><a href="#introducao">Introdução</a></li>
+                <li><a href="#parte1-clone">Parte 1: Colocando o Site no Servidor</a></li>
+                <li><a href="#parte2-permissoes">Parte 2: Ajustando Permissões</a></li>
+                <li><a href="#parte3-script">Parte 3: O Script de Deploy (Webhook)</a></li>
+                <li><a href="#parte4-github">Parte 4: Configurando o Gatilho no GitHub</a></li>
+                <li><a href="#parte5-auth-erro1">Parte 5: Erro de Autenticação #1 (HTTPS)</a></li>
+                <li><a href="#parte6-auth-solucao1">Parte 6: Solução #1 (Mudar para SSH)</a></li>
+                <li><a href="#parte7-auth-erro2">Parte 7: Erro de Autenticação #2 (Host Key)</a></li>
+                <li><a href="#parte8-auth-solucao2">Parte 8: Solução #2 (Adicionar Host Key)</a></li>
+                <li><a href="#parte9-auth-erro3">Parte 9: Erro de Autenticação #3 (Repo Found)</a></li>
+                <li><a href="#parte10-auth-solucao3">Parte 10: Solução #3 (Chave Pessoal SSH)</a></li>
+                <li><a href="#parte11-dev-no-servidor">Parte 11: Bônus (Dev no Servidor)</a></li>
+                <li><a href="#conclusao">Conclusão: Sucesso!</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="content">
+
+        <section id="introducao">
+            <h2>Introdução</h2>
+            <p>No primeiro tutorial, publicamos nosso site em um repositório público no GitHub. Agora, vamos automatizar o processo de atualização do nosso servidor de produção.</p>
+            <p>O objetivo é: quando dermos <code>git push</code> do nosso ambiente de desenvolvimento, o servidor de produção deve rodar <code>git pull</code> sozinho e atualizar o site no ar, nos notificando do resultado via WhatsApp.</p>
+        </section>
+        
+        <section id="parte1-clone">
+            <h2>Parte 1: Colocando o Site no Servidor</h2>
+            <p>O primeiro passo foi "clonar" o repositório do GitHub para a pasta correta no servidor. A pasta de produção do Nginx neste servidor é <code>/code/public</code>.</p>
+            
+            <p>Usamos um comando único para clonar o repositório diretamente para a pasta com o nome `public`:</p>
+            <pre><code># Estando em /code, clonamos o repositório para a pasta /code/public
+git clone https://github.com/wonecosystem/woncloud_site.git public</code></pre>
+            <p>Após isso, o site já estava no ar, pois o Nginx já estava configurado para servir esta pasta.</p>
+        </section>
+        
+        <section id="parte2-permissoes">
+            <h2>Parte 2: Ajustando Permissões</h2>
+            <p>Para que um script automático (executado pelo servidor web) possa rodar <code>git pull</code>, ele precisa ter permissão de "escrever" na pasta <code>/code/public</code>.</p>
+            <p>1. Primeiro, descobrimos qual usuário o Nginx usa para rodar:</p>
+            <pre><code>ps aux | grep nginx</code></pre>
+            <p>O resultado mostrou que os "worker process" rodam como <strong><code>www-data</code></strong>.</p>
+
+            <p>2. Em seguida, mudamos o "dono" da pasta do site (que foi clonada como <code>root</code>) para o <code>www-data</code>:</p>
+            <pre><code>chown -R www-data:www-data /code/public</code></pre>
+        </section>
+
+        <section id="parte3-script">
+            <h2>Parte 3: O Script de Deploy (Webhook)</h2>
+            <p>O GitHub não pode acessar nosso terminal, mas pode chamar uma URL. Criamos um script PHP que, ao ser chamado, executa o <code>git pull</code> por nós.</p>
+            <p>Este arquivo foi criado em <code>/code/public/deploy_script_a8f3z.php</code>. O nome aleatório é uma camada de segurança.</p>
+            
+            <div class="note">
+                <p>Nosso Nginx já estava configurado para executar qualquer arquivo <code>.php</code>, então nenhuma mudança no Nginx foi necessária.</p>
+            </div>
+            
+            <p>Abaixo, o código final do script, que inclui a validação de token e a notificação do WhatsApp.</p>
+            
+            <pre><code>&lt;?php
+// --- Configurações --- 
+define('SECRET_TOKEN', 'KEY-DEPLOY'); // Token secreto
+$whatsapp_api_key = 'GLOBAL-KEY';
+$whatsapp_api_url = 'https://evo.seusite.com.br/message/sendText/instancia-123';
+$whatsapp_number_to = '5527123456789';
+$site_name = 'Site WonCloud';
+
+// --- 1. Verificação de Segurança ---
+header('Content-Type: text/plain; charset=utf-8'); 
+if (!isset($_GET['secret']) || $_GET['secret'] !== SECRET_TOKEN) {
+    http_response_code(403);
+    die("Acesso negado. Token inválido.\n");
+}
+
+echo "Payload recebido. Iniciando deploy...\n";
+
+// --- 2. Executa o Comando de Deploy ---
+// Define o 'home' do www-data para que o git/ssh encontre a chave .ssh
+putenv('HOME=/var/www'); 
+$command = 'cd /code/public && git pull 2>&1';
+$output = shell_exec($command);
+
+if ($output === null) {
+    $output = 'ERRO: shell_exec() falhou.';
+    http_response_code(500); 
+} else {
+    http_response_code(200); 
+}
+
+echo "--- Saída do Git ---\n";
+echo $output . "\n";
+
+// --- 3. Envia a Notificação do WhatsApp ---
+$clean_output = trim(strip_tags($output));
+
+if (strpos($output, 'fatal') !== false || strpos($output, 'error') !== false) {
+    $emoji = '🚨';
+    $title = "Falha no Deploy: {$site_name}";
+    $git_status = "Erro:\n```\n" . $clean_output . "\n```";
+} else {
+    $emoji = '🚀';
+    $title = "Deploy Finalizado: {$site_name}";
+    $git_status = "Status:\n```\n" . (empty($clean_output) ? 'Tudo atualizado' : $clean_output) . "\n```";
+}
+
+$whatsapp_message = "{$emoji} *{$title}* {$emoji}\n\n";
+$whatsapp_message .= $git_status;
+
+$postData = [
+    'number' => $whatsapp_number_to,
+    'text' => $whatsapp_message,
+    'linkPreview' => false
+];
+
+$curl = curl_init();
+curl_setopt_array($curl, array(
+  CURLOPT_URL => $whatsapp_api_url,
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_FOLLOWLOCATION => true,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => 'POST',
+  CURLOPT_POSTFIELDS => json_encode($postData),
+  CURLOPT_HTTPHEADER => array(
+    'Content-Type: application/json',
+    'apikey: ' . $whatsapp_api_key
+  ),
+));
+
+echo "--- Status da Notificação ---\n";
+$whatsapp_response = curl_exec($curl);
+$whatsapp_error = curl_error($curl);
+curl_close($curl);
+
+if (!empty($whatsapp_error)) {
+    echo "Erro ao enviar WhatsApp: " . $whatsapp_error . "\n";
+} else {
+    echo "Notificação enviada. Resposta da API: " . $whatsapp_response . "\n";
+}
+
+echo "Deploy finalizado.\n";
+?&gt;</code></pre>
+        </section>
+
+        <section id="parte4-github">
+            <h2>Parte 4: Configurando o Gatilho no GitHub</h2>
+            <p>Com o script no lugar, fomos ao GitHub (<code>Settings > Webhooks</code>) e adicionamos um novo Webhook com as seguintes configurações:</p>
+            <ul>
+                <li><strong>Payload URL:</strong> <code>https://seusite.com.br/deploy_script.php?secret=sua-key</code> (A URL do nosso script com o token secreto).</li>
+                <li><strong>Content type:</strong> <code>application/json</code>.</li>
+                <li><strong>Secret:</strong> (Deixado em branco, pois já usamos o token na URL).</li>
+                <li><strong>Which events...:</strong> "Just the <code>push</code> event."</li>
+            </ul>
+        </section>
+        
+        <section id="parte5-auth-erro1">
+            <h2>Parte 5: Erro de Autenticação #1 (HTTPS)</h2>
+            <p>O teste do Webhook falhou. A notificação do WhatsApp mostrou o primeiro erro:</p>
+            <div class="warning">
+                <p><code>fatal: could not read Username for 'https://github.com': No such device or address</code></p>
+            </div>
+            <p><strong>Causa:</strong> Nosso repositório foi clonado com <strong>HTTPS</strong>. O <code>git pull</code> tentou pedir um usuário e senha, mas como o script <code>www-data</code> não tem um terminal, ele falhou.</p>
+        </section>
+        
+        <section id="parte6-auth-solucao1">
+            <h2>Parte 6: Solução #1 (Mudar para SSH)</h2>
+            <p>A solução é mudar a autenticação do servidor para <strong>SSH</strong> (usando chaves).</p>
+
+            <h3>1. Gerar a Chave SSH para `www-data`</h3>
+            <p>Como estávamos logados como <code>root</code>, criamos a chave e depois mudamos o dono, salvando-a no "home" do <code>www-data</code> (<code>/var/www/</code>).</p>
+            <pre><code># Criar a pasta, se não existir, e definir permissões
+mkdir -p /var/www/.ssh
+chown www-data:www-data /var/www/.ssh
+chmod 700 /var/www/.ssh
+
+# Gerar a chave (como root, pois 'sudo' não estava disponível)
+ssh-keygen -t rsa -b 4096 -C "webhook-deploy-woncloud" -f /var/www/.ssh/id_rsa -N ""
+
+# Dar posse dos arquivos da chave ao www-data
+chown www-data:www-data /var/www/.ssh/id_rsa
+chown www-data:www-data /var/www/.ssh/id_rsa.pub</code></pre>
+            
+            <h3>2. Mudar a URL do Repositório no Servidor</h3>
+            <p>Depois, fomos até a pasta do site e dissemos ao Git para usar o SSH em vez de HTTPS. Isso causou um erro de "dono suspeito", pois estávamos como <code>root</code> editando um repo do <code>www-data</code>.</p>
+            <pre><code>cd /code/public
+
+# 1. Adicionar o diretório à lista segura do root
+git config --global --add safe.directory /code/public
+
+# 2. Mudar a URL do remote
+git remote set-url origin git@github.com:seugit/seu_projeto.git</code></pre>
+        </section>
+
+        <section id="parte7-auth-erro2">
+            <h2>Parte 7: Erro de Autenticação #2 (Host Key)</h2>
+            <p>Testamos o Webhook de novo e recebemos o segundo erro:</p>
+            <div class="warning">
+                <p><code>Host key verification failed. fatal: Could not read from remote repository.</code></p>
+            </div>
+            <p><strong>Causa:</strong> O usuário <code>www-data</code> nunca tinha se conectado ao `github.com` via SSH. O SSH estava parando o processo para perguntar "Você confia neste servidor? (sim/não)". Como o script não pode digitar "sim", ele falha.</p>
+        </section>
+        
+        <section id="parte8-auth-solucao2">
+            <h2>Parte 8: Solução #2 (Adicionar Host Key)</h2>
+            <p>Nós "ensinamos" ao <code>www-data</code> que o `github.com` é confiável, adicionando manualmente sua "impressão digital" (host key) à lista de servidores conhecidos.</p>
+            <pre><code># Escaneia a chave do github.com e salva no known_hosts do www-data
+ssh-keyscan github.com > /var/www/.ssh/known_hosts
+
+# Garante que o www-data é o dono do arquivo
+chown www-data:www-data /var/www/.ssh/known_hosts</code></pre>
+        </section>
+
+        <section id="parte9-auth-erro3">
+            <h2>Parte 9: Erro de Autenticação #3 (Repository not found)</h2>
+            <p>Testamos de novo. A conexão SSH funcionou, mas o GitHub a rejeitou com um novo erro:</p>
+            <div class="warning">
+                <p><code>ERROR: Repository not found. fatal: Could not read from remote repository.</code></p>
+            </div>
+            <p><strong>Causa:</strong> Havíamos adicionado a chave SSH do <code>www-data</code> como uma "Deploy Key". Esta configuração é ideal para repositórios *privados*, mas pode ser problemática com repositórios *públicos*.</p>
+        </section>
+        
+        <section id="parte10-auth-solucao3">
+            <h2>Parte 10: Solução #3 (Chave Pessoal SSH)</h2>
+            <p>A solução final foi tratar o servidor como um "desenvolvedor" normal, adicionando sua chave SSH à nossa *conta pessoal* do GitHub.</p>
+            <ol>
+                <li><strong>No GitHub:</strong> Fomos em <code>Settings > Deploy Keys</code> e <strong>removemos</strong> a "Deploy Key" que tinha falhado.</li>
+                <li><strong>No GitHub:</strong> Fomos em <code>Perfil Pessoal (sua foto) > Settings > SSH and GPG keys</code>.</li>
+                <li>Clicamos em "New SSH key".</li>
+                <li>Colamos a chave pública do <code>www-data</code> (o conteúdo de <code>cat /var/www/.ssh/id_rsa.pub</code>) lá e salvamos.</li>
+            </ol>
+            <p>Após isso, re-enviamos o Webhook e... <strong>Sucesso!</strong></p>
+        </section>
+        
+        <section id="parte11-dev-no-servidor">
+            <h2>Parte 11: Bônus (Desenvolvendo no Servidor)</h2>
+            <p>Descobrimos um último problema: como o ambiente de desenvolvimento é o próprio servidor de produção, o usuário <code>root</code> (nós) precisava dar <code>git push</code>.</p>
+            <div class="warning">
+                <p><code>git@github.com: Permission denied (publickey).</code></p>
+            </div>
+            <p><strong>Causa:</strong> A chave SSH que adicionamos ao GitHub era do <code>www-data</code>. O usuário <code>root</code> não tinha nenhuma chave.</p>
+            <p><strong>Solução:</strong> Repetimos o processo, mas para o usuário <code>root</code>.</p>
+            <pre><code># 1. Gerar a chave para o root (salvando no local padrão /root/.ssh/id_rsa)
+ssh-keygen -t rsa -b 4096 -C "root@seugit-server" -N ""
+
+# 2. Pegar a chave pública
+cat /root/.ssh/id_rsa.pub
+
+# 3. Adicionar esta NOVA chave à sua conta pessoal do GitHub
+# (O mesmo lugar de antes: Perfil > Settings > SSH and GPG keys)
+</code></pre>
+            <p>Após adicionar a chave do <code>root</code> ao GitHub, o comando <code>git push</code> passou a funcionar perfeitamente.</s
+        </section>
+
+        <section id="conclusao">
+            <h2>Conclusão: Sucesso!</h2>
+            <p>Com toda a autenticação resolvida, agora temos um fluxo de trabalho perfeito:</p>
+            <ol>
+                <li>Fazemos uma mudança no código em <code>/code/public</code>.</li>
+                <li>Rodamos <code>git add .</code>, <code>git commit -m "..."</code>, e <code>git push</code> (como <code>root</code>).</li>
+                <li>O <code>push</code> aciona o Webhook do GitHub.</li>
+                <li>O GitHub chama nosso script <code>deploy_script_a8f3z.php</code>.</li>
+                <li>O script (rodando como <code>www-data</code>) executa <code>git pull</code> com sucesso via SSH.</li>
+                <li>O site é atualizado no ar.</li>
+                <li>Recebemos uma notificação de sucesso no WhatsApp.</li>
+            </ol>
+            <p>Missão cumprida!</p>
+        </section>
+
+    </main>
+
+</body>
+</html>

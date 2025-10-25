@@ -1,0 +1,375 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial: Publicando um Site Estático no GitHub</title>
+    <style>
+        /* Reset e Configurações Globais */
+        :root {
+            --dark-bg: #0a192f;        /* Cor de fundo do seu site */
+            --content-bg: #111827;    /* Um pouco mais claro */
+            --sidebar-bg: #0a192f;
+            --primary-color: #00ff88;  /* Cor primária do seu site */
+            --secondary-color: #00b3ff;/* Cor secundária do seu site */
+            --text-light: #ccd6f6;     /* Cor de texto do seu site */
+            --text-dark: #8892b0;
+            --border-color: #1f2937;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            display: flex;
+            line-height: 1.6;
+        }
+
+        /* --- Barra Lateral de Navegação --- */
+        .sidebar {
+            width: 280px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .sidebar h1 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+        }
+
+        .sidebar nav li {
+            margin-bottom: 0.75rem;
+        }
+
+        .sidebar nav a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        .sidebar nav a:hover,
+        .sidebar nav a.active {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        /* --- Conteúdo Principal --- */
+        .content {
+            margin-left: 280px;
+            padding: 3rem 4rem;
+            width: calc(100% - 280px);
+        }
+
+        .content section {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .content section:last-child {
+            border-bottom: none;
+        }
+
+        .content h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .content h3 {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .content p {
+            margin-bottom: 1rem;
+        }
+
+        .content ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Bloco de Código */
+        pre {
+            background-color: var(--content-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        code {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            color: var(--text-light);
+        }
+
+        /* --- Responsividade para Vídeo --- */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* Proporção 16:9 (9 / 16 = 0.5625) */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            margin: 1.5rem 0; /* Espaçamento acima e abaixo */
+            border-radius: 8px; /* Borda arredondada */
+            border: 1px solid var(--border-color);
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Bloco de Nota/Aviso */
+        .note {
+            background-color: rgba(0, 179, 255, 0.05); /* Fundo com cor secundária */
+            border-left: 4px solid var(--secondary-color);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .note p {
+            margin: 0;
+        }
+
+        /* Responsividade */
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .content {
+                margin-left: 0;
+                width: 100%;
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <h1>Tutorial Git</h1>
+        <nav>
+            <ul>
+                <li><a href="#introducao">Introdução</a></li>
+                <li><a href="#passo1">Passo 1: Criar o Repositório no GitHub</a></li>
+                <li><a href="#passo2">Passo 2: Iniciar o Git no Projeto Local</a></li>
+                <li><a href="#passo3">Passo 3: Configurar sua Identidade</a></li>
+                <li><a href="#passo4">Passo 4: Adicionar e "Comitar" os Arquivos</a></li>
+                <li><a href="#passo5">Passo 5: Conectar e Enviar (Push)</a></li>
+                <li><a href="#passo6">Passo 6: Autorização do Dispositivo</a></li>
+                <li><a href="#passo7">Passo 7: Adicionar um README.md</a></li>
+                <li><a href="#problema-comum">Problema Comum: Push Rejeitado</a></li>
+                <li><a href="#conclusao">Conclusão</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="content">
+
+        <section id="introducao">
+            <h2>Introdução</h2>
+            <p>Este tutorial documenta o processo passo a passo para pegar um projeto de site estático (HTML, CSS, JS) que está em uma pasta local e publicá-lo em um novo repositório público no GitHub.</p>
+            <h3>Pré-requisitos</h3>
+            <ul>
+                <li>Ter o <strong>Git</strong> instalado na sua máquina (verifique com <code>git --version</code>).</li>
+                <li>Ter uma <strong>conta no GitHub</strong>.</li>
+                <li>Um projeto de site em uma pasta local.</li>
+            </ul>
+        </section>
+
+        <div class="video-container">
+            <iframe 
+                src="https://www.youtube.com/embed/CODIGO_DO_SEU_VIDEO" 
+                title="Tutorial em Vídeo: Publicando Site no GitHub" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen>
+            </iframe>
+        </div>
+
+        <section id="passo1">
+            <h2>Passo 1: Criar o Repositório no GitHub</h2>
+            <p>O primeiro passo é criar um "espaço" no GitHub para onde enviaremos nossos arquivos.</p>
+            <ol>
+                <li>Faça login no GitHub.</li>
+                <li>Clique no ícone de "+" no canto superior direito e selecione <strong>"New repository"</strong>.</li>
+                <li>Escolha um nome para seu repositório (ex: <code>meu-site</code>).</li>
+                <li>Selecione <strong>"Public"</strong> (Público).</li>
+                <li><strong>Importante:</strong> Não marque as caixas "Add a README file", "Add .gitignore" ou "Choose a license". Vamos começar com um repositório vazio.</li>
+                <li>Clique em <strong>"Create repository"</strong>.</li>
+                <li>Na próxima página, copie o URL do repositório. Ele será algo como: <code>https://github.com/seu-usuario/meu-site.git</code>.</li>
+            </ol>
+        </section>
+
+        <section id="passo2">
+            <h2>Passo 2: Iniciar o Git no Projeto Local</h2>
+            <p>Agora, vamos ao terminal na pasta do nosso projeto e "iniciar" o Git nela.</p>
+            
+            <p>1. Navegue até a pasta raiz do seu projeto:</p>
+            <pre><code>cd /caminho/para/seu/projeto</code></pre>
+
+            <p>2. Inicie o Git. Isso cria uma pasta oculta <code>.git</code> para rastrear as mudanças:</p>
+            <pre><code>git init</code></pre>
+            
+            <p>3. (Recomendado) Renomeie a branch (ramificação) principal de <code>master</code> para <code>main</code>. Este é o novo padrão da indústria:</p>
+            <pre><code>git branch -M main</code></pre>
+        </section>
+
+        <section id="passo3">
+            <h2>Passo 3: Configurar sua Identidade</h2>
+            <p>Se esta é a primeira vez que você usa o Git nesta máquina, ele pedirá sua identidade. O Git precisa saber quem está fazendo as mudanças.</p>
+            
+            <div class="note">
+                <p><strong>Nota:</strong> Você só precisa fazer isso uma vez por máquina, usando a opção <code>--global</code>.</p>
+            </div>
+            
+            <p>1. Configure seu email (o mesmo usado no GitHub):</p>
+            <pre><code>git config --global user.email "seu-email@exemplo.com"</code></pre>
+
+            <p>2. Configure seu nome de usuário:</p>
+            <pre><code>git config --global user.name "Seu Nome de Usuário"</code></pre>
+        </section>
+        
+        <section id="passo4">
+            <h2>Passo 4: Adicionar e "Comitar" os Arquivos</h2>
+            <p>Agora vamos dizer ao Git quais arquivos ele deve rastrear e criar nosso primeiro "ponto de salvamento" (commit).</p>
+
+            <p>1. Adicione <strong>todos</strong> os arquivos da pasta atual ao "stage" (área de preparação) do Git. O ponto <code>.</code> significa "tudo nesta pasta".</p>
+            <pre><code>git add .</code></pre>
+
+            <p>2. Crie o "commit". Pense nisso como tirar uma foto do seu projeto com uma mensagem descritiva.</p>
+            <pre><code>git commit -m "Commit inicial do site"</code></pre>
+        </section>
+        
+        <section id="passo5">
+            <h2>Passo 5: Conectar e Enviar (Push)</h2>
+            <p>Com nosso commit local pronto, vamos conectá-lo ao repositório que criamos no GitHub (Passo 1) e enviar nossos arquivos.</p>
+
+            <p>1. Adicione o link do seu repositório remoto (aquele URL que você copiou). Damos a ele o apelido de <code>origin</code>:</p>
+            <pre><code>git remote add origin https://github.com/seu-usuario/meu-site.git</code></pre>
+
+            <p>2. Envie (push) seu commit da branch <code>main</code> local para a branch <code>main</code> do <code>origin</code> (GitHub):</p>
+            <pre><code>git push -u origin main</code></pre>
+            <p>O <code>-u</code> é usado apenas na primeira vez para vincular permanentemente sua branch local à remota.</p>
+        </section>
+
+        <section id="passo6">
+            <h2>Passo 6: Autorização do Dispositivo</h2>
+            <p>Ao dar o <code>push</code> pela primeira vez, o GitHub não pedirá sua senha. Em vez disso, ele usará um fluxo de autorização de dispositivo, que é mais seguro.</p>
+
+            <ol>
+                <li>No seu <strong>terminal</strong>, o Git mostrará uma mensagem parecida com:
+                    <pre><code>info: please complete authentication in your browser...
+Please enter the following one-time code: 1234-ABCD</code></pre>
+                </li>
+                <li>O navegador abrirá automaticamente. Se não abrir, acesse a URL que o terminal mostrar (ex: <code>github.com/login/device</code>).</li>
+                <li>Na página do GitHub, digite o código de 8 dígitos (<code>1234-ABCD</code>) que apareceu no seu terminal.</li>
+                <li>Clique em "Continue" e depois em "Authorize" (Autorizar).</li>
+                <li>Você verá uma tela de sucesso no navegador.</li>
+                <li>Volte ao terminal. O comando <code>git push</code> que estava pausado será concluído e seus arquivos serão enviados!</li>
+            </ol>
+        </section>
+
+        <section id="passo7">
+            <h2>Passo 7: Adicionar um README.md</h2>
+            <p>Um repositório público deve ter um arquivo <code>README.md</code>, que funciona como a "capa" ou "página inicial" do seu projeto no GitHub.</p>
+            <p>A forma mais fácil de adicionar um é diretamente pela interface do GitHub:</p>
+            
+            <ol>
+                <li>Vá para a página principal do seu repositório no GitHub.</li>
+                <li>Você verá um botão verde <strong>"Add a README"</strong>. Clique nele.</li>
+                <li>O GitHub abrirá um editor de texto onde você pode escrever usando a sintaxe Markdown.</li>
+                <li>Descreva seu projeto, o que ele faz, e como usá-lo.</li>
+                <li>Ao terminar, role para baixo, escreva uma mensagem de commit (ex: "Adiciona README.md") e clique em <strong>"Commit changes..."</strong>.</li>
+            </ol>
+            <p>Seu repositório agora terá um README bonito e profissional.</p>
+        </section>
+
+        <section id="conclusao">
+            <h2>Conclusão</h2>
+            <p>Parabéns! Você publicou com sucesso seu site estático em um repositório público do GitHub. Seus arquivos estão agora versionados, seguros na nuvem e prontos para serem compartilhados.</p>
+            
+            <div class="note">
+                <p><strong>Próximos passos:</strong> A partir de agora, sempre que você fizer uma alteração local, basta executar <code>git add .</code>, <code>git commit -m "minha nova mudança"</code> e <code>git push</code>.</p>
+            </div>
+        </section>
+
+        <section id="problema-comum">
+            <h2>Problema Comum: "non-fast-forward" (Push Rejeitado!)</h2>
+            <p>Em algum momento, ao tentar dar <code>git push</code>, você pode se deparar com um erro assustador que diz <strong>"non-fast-forward"</strong> ou <strong>"Updates were rejected"</strong>.</p>
+            
+            <pre><code>root@...# git push
+To https://github.com/user/repo.git
+ ! [rejected]        main -> main (non-fast-forward)
+error: failed to push some refs to '...'
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. Integrate the remote changes (e.g.
+hint: 'git pull ...') before pushing again.</code></pre>
+
+            <h3>Por que isso acontece?</h3>
+            <p>Isso significa que o repositório no GitHub tem mudanças (commits) que o seu computador local ainda não tem.</p>
+            <p>No nosso caso, isso aconteceu porque nós criamos o arquivo <code>README.md</code> <strong>diretamente pelo site do GitHub</strong>. Isso criou um "commit" lá no GitHub, deixando-o "à frente" do nosso repositório local. O Git nos impede de dar <code>push</code> para não sobrescrevermos essa mudança por acidente.</p>
+
+            <h3>A Solução: Puxar, Juntar e Empurrar</h3>
+            <p>A dica do próprio Git é rodar <code>git pull</code> para trazer as mudanças. No entanto, ao fazer isso, você pode ver outro erro:</p>
+            <pre><code>root@...# git pull 
+fatal: Need to specify how to reconcile divergent branches.</code></pre>
+            
+            <p>O Git só está pedindo para você decidir *como* ele deve juntar os históricos. Vamos instruí-lo a usar a estratégia padrão (e mais segura) de "merge" (juntar).</p>
+
+            <p><strong>Passo 1: Configure a estratégia de pull (só precisa fazer 1 vez)</strong></p>
+            <pre><code>git config pull.rebase false</code></pre>
+
+            <p><strong>Passo 2: Agora sim, puxe (pull) as mudanças do GitHub</strong></p>
+            <p>Isso vai baixar o <code>README.md</code> do GitHub e o Git vai criar um "commit de merge" para juntar o seu histórico local com o histórico remoto.</p>
+            <pre><code>git pull</code></pre>
+            
+            <div class="note">
+                <p><strong>Nota:</strong> Se um editor de texto (como <code>nano</code> ou <code>vim</code>) abrir com uma mensagem de "Merge branch 'main'...", é só salvar e fechar. Ele só quer que você confirme a mensagem do commit de merge.</p>
+            </div>
+
+            <p><strong>Passo 3: Envie (push) o histórico combinado</strong></p>
+            <p>Agora que seu computador local tem *tanto* os seus arquivos *quanto* o <code>README.md</code> do GitHub, você pode enviar o histórico final e combinado:</p>
+            <pre><code>git push</code></pre>
+            
+            <p>Pronto! Agora seu repositório local e o remoto estão 100% sincronizados.</p>
+        </section>
+
+    </main>
+
+</body>
+</html>
