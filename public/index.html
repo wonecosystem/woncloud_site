@@ -64,74 +64,20 @@
             }
         }
     </script>
-<style>@import"https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap";body{font-family:'Inter',sans-serif;background-color:#0a192f;color:#ccd6f6}.gradient-text{background:linear-gradient(90deg,#00ff88,#00b3ff);-webkit-background-clip:text;background-clip:text;color:transparent}.glow-card{box-shadow:0 0 15px rgba(0,255,136,.3);transition:all .3s ease}.glow-card:hover{box-shadow:0 0 25px rgba(0,255,136,.5);transform:translateY(-5px)}.feature-icon{font-size:2rem;background:linear-gradient(135deg,#00ff88,#00b3ff);-webkit-background-clip:text;background-clip:text;color:transparent}.btn-primary{background:linear-gradient(90deg,#00ff88,#00b3ff);color:#0a192f;font-weight:600;transition:all .3s ease}.btn-primary:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(0,255,136,.4)}.nav-link{position:relative}.nav-link:after{content:'';position:absolute;width:0;height:2px;bottom:-2px;left:0;background-color:#00ff88;transition:width .3s ease}.nav-link:hover:after{width:100%}.input-field{background-color:rgba(10,25,47,.7);border:1px solid #1e2b47;color:#ccd6f6}.input-field:focus{outline:0;border-color:#00ff88;box-shadow:0 0 0 2px rgba(0,255,136,.2)}@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,255,136,.4)}70%{box-shadow:0 0 0 10px transparent}to{box-shadow:0 0 0 0 transparent}}.pulse-animation{animation:pulse 2s infinite}.mobile-menu{max-height:0;overflow:hidden;transition:max-height .3s ease-out}.mobile-menu.open{max-height:500px}.data-center-icon{font-size:3rem;color:#00ff88}.testimonial-card{background:rgba(10,25,47,.7);backdrop-filter:blur(10px)}.scroll-indicator{animation:bounce 2s infinite}@keyframes bounce{0%,20%,50%,80%,to{transform:translateY(0)}40%{transform:translateY(-20px)}60%{transform:translateY(-10px)}}</style>
-</head><!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#00ff88">
-    <meta name="robots" content="index,follow">
-    <link rel="canonical" href="https://woncloud.com.br/">
-    <link rel="alternate" hreflang="pt-BR" href="https://woncloud.com.br/">
-    <link rel="alternate" hreflang="x-default" href="https://woncloud.com.br/">
-    
-    <title>WonCloud - Servidores Dedicados e VPS de Alta Performance no Brasil</title>
-    <meta name="description" content="Procurando por Servidores Dedicados e VPS no Brasil? A WonCloud oferece infraestrutura de alta performance com 99.9% de uptime, SSDs NVMe e suporte especializado 24/7.">
-    <meta name="author" content="Won Ecosystem">
-    <meta name="keywords" content="hospedagem dedicada, servidor dedicado, vps, servidor vps brasil, cloud, cpanel, alta performance">
-    <link rel="shortcut icon" id="favicon" href="https://crm.wonecosystem.com.br/uploads/company/favicon.png">
-
-    <meta property="og:site_name" content="WonCloud">
-    <meta property="og:locale" content="pt_BR">
-    <meta property="og:title" content="WonCloud - Servidores Dedicados e VPS de Alta Performance no Brasil">
-    <meta property="og:description" content="Infraestrutura de alta performance com 99.9% de uptime, SSDs NVMe e suporte 24/7.">
-    <meta property="og:image" content="https://woncloud.com.br/og-image.jpg">
-    <meta property="og:url" content="https://woncloud.com.br/">
-    <meta property="og:type" content="website">
-
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@woncloud">
-    <meta name="twitter:creator" content="@woncloud">
-    <meta name="twitter:title" content="WonCloud - Servidores Dedicados e VPS de Alta Performance no Brasil">
-    <meta name="twitter:description" content="Infraestrutura de alta performance com 99.9% de uptime, SSDs NVMe e suporte 24/7.">
-    <meta name="twitter:image" content="https://woncloud.com.br/og-image.jpg">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/imask"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "WonCloud",
-      "url": "https://woncloud.com.br/",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://woncloud.com.br/search?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
+<style>
+    @font-face {
+    font-family: 'Inter';
+    font-weight: 300 700; /* Define que este arquivo cobre de Light a Bold */
+    font-style: normal;
+    font-display: swap;
+    /* O nome local evita download se o usuário já tiver a fonte instalada */
+    src: local('Inter Variable'), local('Inter'), 
+        url('/fonts/Inter.woff2') format('woff2-variations');
     }
-    </script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#00ff88',
-                        secondary: '#006b3b',
-                        dark: '#0a192f',
-                        light: '#ccd6f6'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
-<style>@import"https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap";body{font-family:'Inter',sans-serif;background-color:#0a192f;color:#ccd6f6}.gradient-text{background:linear-gradient(90deg,#00ff88,#00b3ff);-webkit-background-clip:text;background-clip:text;color:transparent}.glow-card{box-shadow:0 0 15px rgba(0,255,136,.3);transition:all .3s ease}.glow-card:hover{box-shadow:0 0 25px rgba(0,255,136,.5);transform:translateY(-5px)}.feature-icon{font-size:2rem;background:linear-gradient(135deg,#00ff88,#00b3ff);-webkit-background-clip:text;background-clip:text;color:transparent}.btn-primary{background:linear-gradient(90deg,#00ff88,#00b3ff);color:#0a192f;font-weight:600;transition:all .3s ease}.btn-primary:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(0,255,136,.4)}.nav-link{position:relative}.nav-link:after{content:'';position:absolute;width:0;height:2px;bottom:-2px;left:0;background-color:#00ff88;transition:width .3s ease}.nav-link:hover:after{width:100%}.input-field{background-color:rgba(10,25,47,.7);border:1px solid #1e2b47;color:#ccd6f6}.input-field:focus{outline:0;border-color:#00ff88;box-shadow:0 0 0 2px rgba(0,255,136,.2)}@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,255,136,.4)}70%{box-shadow:0 0 0 10px transparent}to{box-shadow:0 0 0 0 transparent}}.pulse-animation{animation:pulse 2s infinite}.mobile-menu{max-height:0;overflow:hidden;transition:max-height .3s ease-out}.mobile-menu.open{max-height:500px}.data-center-icon{font-size:3rem;color:#00ff88}.testimonial-card{background:rgba(10,25,47,.7);backdrop-filter:blur(10px)}.scroll-indicator{animation:bounce 2s infinite}@keyframes bounce{0%,20%,50%,80%,to{transform:translateY(0)}40%{transform:translateY(-20px)}60%{transform:translateY(-10px)}}</style>
+
+    body{font-family:'Inter',sans-serif;background-color:#0a192f;color:#ccd6f6}.gradient-text{background:linear-gradient(90deg,#00ff88,#00b3ff);-webkit-background-clip:text;background-clip:text;color:transparent}.glow-card{box-shadow:0 0 15px rgba(0,255,136,.3);transition:all .3s ease}.glow-card:hover{box-shadow:0 0 25px rgba(0,255,136,.5);transform:translateY(-5px)}.feature-icon{font-size:2rem;background:linear-gradient(135deg,#00ff88,#00b3ff);-webkit-background-clip:text;background-clip:text;color:transparent}.btn-primary{background:linear-gradient(90deg,#00ff88,#00b3ff);color:#0a192f;font-weight:600;transition:all .3s ease}.btn-primary:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(0,255,136,.4)}.nav-link{position:relative}.nav-link:after{content:'';position:absolute;width:0;height:2px;bottom:-2px;left:0;background-color:#00ff88;transition:width .3s ease}.nav-link:hover:after{width:100%}.input-field{background-color:rgba(10,25,47,.7);border:1px solid #1e2b47;color:#ccd6f6}.input-field:focus{outline:0;border-color:#00ff88;box-shadow:0 0 0 2px rgba(0,255,136,.2)}@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,255,136,.4)}70%{box-shadow:0 0 0 10px transparent}to{box-shadow:0 0 0 0 transparent}}.pulse-animation{animation:pulse 2s infinite}.mobile-menu{max-height:0;overflow:hidden;transition:max-height .3s ease-out}.mobile-menu.open{max-height:500px}.data-center-icon{font-size:3rem;color:#00ff88}.testimonial-card{background:rgba(10,25,47,.7);backdrop-filter:blur(10px)}.scroll-indicator{animation:bounce 2s infinite}@keyframes bounce{0%,20%,50%,80%,to{transform:translateY(0)}40%{transform:translateY(-20px)}60%{transform:translateY(-10px)}}
+
+</style>
 </head>
 <body>
     <!-- Header -->
