@@ -30,40 +30,7 @@
     <meta name="twitter:description" content="Infraestrutura de alta performance com 99.9% de uptime, SSDs NVMe e suporte 24/7.">
     <meta name="twitter:image" content="https://woncloud.com.br/og-image.jpg">
     
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/imask"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "WonCloud",
-      "url": "https://woncloud.com.br/",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://woncloud.com.br/search?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    }
-    </script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#00ff88',
-                        secondary: '#006b3b',
-                        dark: '#0a192f',
-                        light: '#ccd6f6'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
+
 <style>
     @font-face {
     font-family: 'Inter';
@@ -771,7 +738,40 @@
     <button id="back-to-top" class="fixed bottom-8 right-8 bg-primary text-dark w-12 h-12 rounded-full flex items-center justify-center shadow-lg opacity-0 invisible transition-all duration-300">
         <i class="fas fa-arrow-up"></i>
     </button>
-
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/imask"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "WonCloud",
+      "url": "https://woncloud.com.br/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://woncloud.com.br/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#00ff88',
+                        secondary: '#006b3b',
+                        dark: '#0a192f',
+                        light: '#ccd6f6'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
     <script>const mobileMenuButton=document.getElementById("mobile-menu-button"),mobileMenu=document.getElementById("mobile-menu");mobileMenuButton.addEventListener("click",(()=>{mobileMenu.classList.toggle("open")}));const faqToggles=document.querySelectorAll(".faq-toggle");faqToggles.forEach((e=>{e.addEventListener("click",(()=>{const t=e.nextElementSibling,o=e.querySelector("i");t.classList.toggle("hidden"),o.classList.toggle("transform"),o.classList.toggle("rotate-180")}))}));const backToTopButton=document.getElementById("back-to-top");window.addEventListener("scroll",(()=>{window.pageYOffset>300?(backToTopButton.classList.remove("opacity-0","invisible"),backToTopButton.classList.add("opacity-100","visible")):(backToTopButton.classList.remove("opacity-100","visible"),backToTopButton.classList.add("opacity-0","invisible"))})),backToTopButton.addEventListener("click",(()=>{window.scrollTo({top:0,behavior:"smooth"})})),document.querySelectorAll('a[href^="#"]').forEach((e=>{e.addEventListener("click",(function(t){t.preventDefault();const o=this.getAttribute("href");if("#"===o)return;const s=document.querySelector(o);s&&(window.scrollTo({top:s.offsetTop-80,behavior:"smooth"}),mobileMenu.classList.contains("hidden")||mobileMenu.classList.remove("open"))}))}));const whatsappInput=document.getElementById("whatsapp"),maskOptions={mask:[{mask:"(00) 0000-0000"},{mask:"(00) 00000-0000"}]},mask=IMask(whatsappInput,maskOptions),contactForm=document.getElementById("contact-form"),formStatus=document.getElementById("form-status"),submitButton=document.getElementById("submit-button");contactForm.addEventListener("submit",(async function(e){e.preventDefault(),submitButton.disabled=!0,submitButton.textContent="Enviando...",formStatus.textContent="";const t=new FormData(contactForm),o=Object.fromEntries(t.entries()),s="https://n8n.woncloud.com.br/webhook/16b57cc5-47ab-48a0-ba4d-1cbada806e1b";try{const e=await fetch(s,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(o)});if(e.ok)formStatus.textContent="Obrigado! Sua mensagem foi enviada com sucesso.",formStatus.style.color="#00ff88",contactForm.reset();else throw new Error("Houve um problema com o envio.")}catch(e){formStatus.textContent="Ops! Não foi possível enviar sua mensagem. Tente novamente mais tarde.",formStatus.style.color="#ff4d4d",console.error("Erro ao enviar formulário:",e)}finally{submitButton.disabled=!1,submitButton.textContent="Enviar Mensagem"}}));</script>
 </body>
 </html>
